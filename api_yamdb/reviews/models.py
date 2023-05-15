@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+<<<<<<< HEAD
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import RegexValidator
 from django.db import models
@@ -34,6 +35,47 @@ class User(AbstractUser):
     bio = models.TextField(blank=True, verbose_name='Биография')
     confirmation_code = models.CharField(
         verbose_name='Код подтверждения', max_length=36, blank=True, null=True
+=======
+from django.db import models
+
+from .validators import validate_username
+
+USER = 'user'
+ADMIN = 'admin'
+MODERATOR = 'moderator'
+
+ROLE_CHOICES = [
+    (USER, USER),
+    (ADMIN, ADMIN),
+    (MODERATOR, MODERATOR),
+]
+
+
+class User(AbstractUser):
+    username = models.CharField(
+        validators=(validate_username,),
+        max_length=150,
+        unique=True,
+        blank=False,
+        null=False
+    )
+    email = models.EmailField(
+        max_length=254,
+        unique=True,
+        blank=False,
+        null=False
+    )
+    role = models.CharField(
+        'роль',
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default=USER,
+        blank=True
+    )
+    bio = models.TextField(
+        'биография',
+        blank=True,
+>>>>>>> upd
     )
     first_name = models.CharField(
         'имя',
@@ -52,6 +94,7 @@ class User(AbstractUser):
         blank=False,
         default='XXXX'
     )
+<<<<<<< HEAD
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -120,3 +163,25 @@ class Title(models.Model):
 
 class Review(models.Model):
     pass
+=======
+
+    @property
+    def is_user(self):
+        return self.role == USER
+
+    @property
+    def is_admin(self):
+        return self.role == ADMIN
+
+    @property
+    def is_moderator(self):
+        return self.role == MODERATOR
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.username
+>>>>>>> upd
