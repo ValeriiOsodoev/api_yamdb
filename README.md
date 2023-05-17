@@ -36,3 +36,5 @@
 <p>Запустить проект:</p>
 
 <p>python manage.py runserver</p>
+=======
+API_YAMDB - 10 спринт

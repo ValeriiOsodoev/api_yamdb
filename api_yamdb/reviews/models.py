@@ -52,6 +52,21 @@ ROLE_CHOICES = [
 
 
 class User(AbstractUser):
+    groups = models.ManyToManyField(
+        to='auth.Group',
+        related_name='customuser_groups',  # добавляем related_name здесь
+        blank=True,
+        verbose_name='groups',
+        help_text='The groups this user belongs to. A user will get all '
+        'permissions granted to each of their groups.'
+    )
+    user_permissions = models.ManyToManyField(
+        to='auth.Permission',
+        related_name='customuser_user_permissions',
+        blank=True,
+        verbose_name='user permissions',
+        help_text='Specific permissions for this user.',
+    )
     username = models.CharField(
         validators=(validate_username,),
         max_length=150,

@@ -1,13 +1,8 @@
 import os
 from datetime import timedelta
-<<<<<<< HEAD
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-=======
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
->>>>>>> upd
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
@@ -26,14 +21,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-<<<<<<< HEAD
     'django_filters',
     'api.apps.ApiConfig',
     'reviews',
-=======
     'rest_framework_simplejwt',
     'django_filters'
->>>>>>> upd
+    'reviews',
 ]
 
 MIDDLEWARE = [
@@ -75,10 +68,8 @@ DATABASES = {
     }
 }
 
-<<<<<<< HEAD
 AUTH_USER_MODEL = 'reviews.User'
-=======
->>>>>>> upd
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -108,7 +99,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-<<<<<<< HEAD
 
 
 REST_FRAMEWORK = {
@@ -129,8 +119,6 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-=======
->>>>>>> upd
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
@@ -142,8 +130,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
-    'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10,
 }
 
