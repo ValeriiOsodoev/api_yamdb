@@ -1,2 +1,1 @@
-# api_yamdb
-api_yamdb
+API_YAMDB - 10 спринт

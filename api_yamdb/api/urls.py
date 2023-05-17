@@ -6,11 +6,7 @@ from .views import APIGetToken, APISignup, UsersViewSet
 app_name = 'api'
 
 router = SimpleRouter()
-router.register(
-    'users',
-    UsersViewSet,
-    basename='users'
-)
+router.register('users', UsersViewSet, basename='users')
 
 urlpatterns = [
     path('v1/auth/token/', APIGetToken.as_view(), name='get_token'),
