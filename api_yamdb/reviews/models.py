@@ -184,6 +184,9 @@ class Review(models.Model):
     @property
     def is_moderator(self):
         return self.role == self.MODERATOR
+    
+    def __str__(self):
+        return self.username
 
 
 <<<<<<< HEAD
@@ -208,9 +211,65 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
-    pass
+    text = models.TextField(
+        help_text='Введите текст поста',
+        verbose_name="Текст"
+    )
+    pub_date = models.DateTimeField(
+        'Дата публикации',
+        auto_now_add=True
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Автор'
+    )
+    image = models.ImageField(
+        upload_to='reviews/',
+        null=True,
+        blank=True,
+        verbose_name='Картинка'
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        related_name='review',
+        blank=True,
+        null=True,
+        verbose_name='Категория',
+        help_text='Выберите категорию'
+    )
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+
+    def __str__(self):
+        return self.text
 
 
 class Comment(models.Model):
+<<<<<<< HEAD
     pass
 >>>>>>> upd
+=======
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Автор'
+    )
+    post = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Отзыв'
+    )
+    text = models.TextField(
+        help_text='Введите комментарий',
+        verbose_name='Текст комментария',
+    )
+    created = models.DateTimeField(
+        'Дата добавления', auto_now_add=True, db_index=True)
+>>>>>>> Правки
