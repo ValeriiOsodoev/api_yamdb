@@ -4,10 +4,13 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from reviews.models import User
+from reviews.models import User, Comment, Review
+
+from django.shortcuts import get_object_or_404
 
 from .permissions import AdminOnly
-from .serializers import NotAdminSerializer, UsersSerializer
+from .serializers import (NotAdminSerializer, UsersSerializer,
+                          ReviewSerializer, CommentSerializer)
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -105,3 +108,25 @@ class APISignup(APIView):
         }
         self.send_email(data)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+    def get_queryset(self):
+        review_id = self.kwargs.get('review_id')
+        review = get_object_or_404(Review, id=review_id)
+        return review.comments.all()
+
+    def perform_create(self, serializer):
+        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        serializer.save(author=self.request.user, review=review)

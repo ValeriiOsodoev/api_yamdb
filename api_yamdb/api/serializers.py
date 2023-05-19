@@ -42,3 +42,34 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'username')
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username'
+    )
+
+    class Meta:
+        model = Review
+        fields = (
+            'id',
+            'author',
+            'text',
+            'pub_date',
+            'image',
+            'group'
+        )
+        read_only_fields = ('author', 'review')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+    )
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        read_only_fields = ('author', 'review')
