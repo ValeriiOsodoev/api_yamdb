@@ -7,7 +7,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 
-
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
@@ -89,6 +88,11 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ['id', 'name', 'year', 'description', 'genre', 'category']
         model = Title
+
+
+class TitleSerializer(ModelSerializer):
+    class Meta:
+        pass
 
 
 class TitleCreateUpdateSerializer(ModelSerializer):

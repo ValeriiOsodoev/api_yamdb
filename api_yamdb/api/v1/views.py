@@ -24,6 +24,11 @@ from django.db.models import F
 from .permissions import AdminRules, UserAccess, AccessOrReadOnly, ReadOnly, IsAdminOrReadOnly
 from .serializers import (ProfileSerializer, SignUpSerializer, TokenSerializer,
                           UserSerializer, CategorySerializer, GenreSerializer, TitleSerializer)
+from reviews.models import User
+
+from .permissions import AdminRules
+from .serializers import (ProfileSerializer, SignUpSerializer, TokenSerializer,
+                          UserSerializer)
 
 HTTP_METHOD = ('get', 'post', 'patch', 'delete')
 
@@ -162,6 +167,17 @@ class TitleViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
     search_fields = ('name', 'year', 'genre__slug', 'category__slug')
     pagination_class = PageNumberPagination
+
+class CategoriesViewSet(ListCreateDestroyViewSet):
+    pass
+
+
+class GenresViewSet(ListCreateDestroyViewSet):
+    pass
+
+
+class TitlesViewSet(viewsets.ModelViewSet):
+    pass
 
 
 class ReviewViewSet(viewsets.ModelViewSet):

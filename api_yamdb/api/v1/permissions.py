@@ -13,6 +13,7 @@ class IsAdminOrReadOnly(BasePermission):
         return request.user.is_admin
 
 
+
 class AdminRules(BasePermission):
     """
     Разрешение для администраторов.
