@@ -79,15 +79,14 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    """Модель жанра."""
     name = models.CharField(
         max_length=256,
-        unique=True
+        unique=True,
     )
-    slug = models.SlugField(unique=True)
-
-    def __str__(self):
-        return self.name
+    slug = models.SlugField(
+        unique=True,
+        max_length=50,
+    )
 
 
 class Title(models.Model):
@@ -103,7 +102,7 @@ class Title(models.Model):
         related_name='genres',
     )
     name = models.CharField(
-        max_length=300,
+        max_length=256,
         verbose_name='Название произведения.'
     )
     description = models.CharField(
@@ -116,4 +115,8 @@ class Title(models.Model):
     )
 
     def __str__(self):
-        return self.category, self.genre, self.name, self.description, self.year
+        return self.name
+
+
+class Review(models.Model):
+    pass

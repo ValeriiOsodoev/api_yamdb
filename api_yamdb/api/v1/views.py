@@ -14,8 +14,14 @@ from reviews.models import User, Category, Genre, Title
 from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import F
 
-from .permissions import AdminRules
+from .permissions import AdminRules, UserAccess, AccessOrReadOnly, ReadOnly, IsAdminOrReadOnly
 from .serializers import (ProfileSerializer, SignUpSerializer, TokenSerializer,
                           UserSerializer, CategorySerializer, GenreSerializer, TitleSerializer)
 
@@ -100,23 +106,62 @@ class CategoryViewSet(viewsets.ModelViewSet):
     """ViewSet модели Categories."""
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrReadOnly, )
+    search_fields = ('name',)
+    lookup_field = 'slug'
+    filter_backends = [filters.SearchFilter]
+    pagination_class = PageNumberPagination
+    
+    def retrieve(self, request, *args, **kwargs):
+        """Переопределение метода retrieve для запрета GET-запросов."""
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def destroy(self, request, *args, **kwargs):
+        """Переопределение метода destroy для удаления категории."""
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def partial_update(self, request, *args, **kwargs):
+        """Переопределение метода partial_update для запрета PATCH-запросов."""
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
-    pagination_class = LimitOffsetPagination
     serializer_class = GenreSerializer
+    pagination_class = LimitOffsetPagination
+    permission_classes = [IsAdminOrReadOnly, ]
     lookup_field = 'slug'
-    filter_backends = (DjangoFilterBackend,)
-    search_fields = ('name', 'slug')
-    filterset_fields = ('name', 'slug')
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['name', 'slug']
+    filterset_fields = ['name', 'slug']
+
+    def retrieve(self, request, *args, **kwargs):
+        """Переопределение метода retrieve для запрета GET-запросов."""
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def destroy(self, request, *args, **kwargs):
+        """Переопределение метода destroy для удаления категории."""
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def partial_update(self, request, *args, **kwargs):
+        """Переопределение метода partial_update для запрета PATCH-запросов."""
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all()
-    pagination_class = LimitOffsetPagination
+    queryset = Title.objects.all().annotate(
+        category_name=F('category__name'),
+        category_slug=F('category__slug'),
+    )
     serializer_class = TitleSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
     search_fields = ('name', 'year', 'genre__slug', 'category__slug')
+    pagination_class = PageNumberPagination
 
 
 class ReviewViewSet(viewsets.ModelViewSet):

@@ -3,6 +3,9 @@ from django.core.validators import RegexValidator
 from rest_framework.serializers import (CharField, EmailField, ModelSerializer,
                                         ValidationError)
 from reviews.models import Category, Genre, Title, User
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
 
 
 class UserSerializer(ModelSerializer):
@@ -67,7 +70,7 @@ class TokenSerializer(ModelSerializer):
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ('name', 'slug')
 
 
 class GenreSerializer(ModelSerializer):
@@ -76,13 +79,16 @@ class GenreSerializer(ModelSerializer):
         fields = ('name', 'slug')
 
 
-class TitleSerializer(ModelSerializer):
+class TitleSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    genre = GenreSerializer(many=True, read_only=True)
+    genre = GenreSerializer(
+        read_only=True,
+        many=True
+    )
 
     class Meta:
+        fields = ['id', 'name', 'year', 'description', 'genre', 'category']
         model = Title
-        fields = '__all__'
 
 
 class TitleCreateUpdateSerializer(ModelSerializer):
