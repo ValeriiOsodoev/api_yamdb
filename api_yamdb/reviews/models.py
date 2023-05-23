@@ -71,7 +71,7 @@ class User(AbstractUser):
 
 class Category(models.Model):
     """Модель категории."""
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, blank=False)
     slug = models.SlugField(unique=True, max_length=50)
 
     def __str__(self):
@@ -94,7 +94,7 @@ class Title(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
         related_name='titles',
-        blank=True, 
+        blank=False,
         null=True
     )
     genre = models.ManyToManyField(
