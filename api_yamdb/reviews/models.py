@@ -54,20 +54,6 @@ class User(AbstractUser):
         return self.role == self.MODERATOR
 
 
-class Genre(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Название жанра')
-    slug = models.SlugField(
-        max_length=50, unique=True, verbose_name='Идентификатор жанра'
-    )
-
-    class Meta:
-        verbose_name = 'Жанр'
-        verbose_name_plural = 'Жанры'
-
-    def __str__(self):
-        return self.name
-
-
 class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название категории')
     slug = models.SlugField(
@@ -82,11 +68,25 @@ class Category(models.Model):
         return self.name
 
 
+class Genre(models.Model):
+    name = models.CharField(max_length=256, verbose_name='Название жанра')
+    slug = models.SlugField(
+        max_length=50, unique=True, verbose_name='Идентификатор жанра'
+    )
+
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
+
+    def __str__(self):
+        return self.name    
+
+
 class Title(models.Model):
     name = models.CharField(
         max_length=256, verbose_name='Название произведения'
     )
-    year = models.IntegerField(verbose_name='Год издания произведения')
+    year = models.IntegerField(verbose_name='Год произведения')
     description = models.TextField(
         blank=True, verbose_name='Описание произведения'
     )
