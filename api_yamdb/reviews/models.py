@@ -79,7 +79,7 @@ class Genre(models.Model):
         verbose_name_plural = 'Жанры'
 
     def __str__(self):
-        return self.name    
+        return self.name
 
 
 class Title(models.Model):
