@@ -1,10 +1,23 @@
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import RegexValidator
-from rest_framework.serializers import (CharField, EmailField, IntegerField,
-                                        ModelSerializer, SlugRelatedField,
-                                        ValidationError)
-from reviews.models import (Category, Comment, Genre, GenreTitle, Review,
-                            Title, User)
+from rest_framework.serializers import (
+    CharField,
+    EmailField,
+    IntegerField,
+    ModelSerializer,
+    SlugRelatedField,
+    ValidationError,
+)
+
+from reviews.models import (
+    Category,
+    Comment,
+    Genre,
+    GenreTitle,
+    Review,
+    Title,
+    User,
+)
 
 
 class CategorySerializer(ModelSerializer):

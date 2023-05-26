@@ -1,6 +1,6 @@
 from api.mixins import ListCreateDestroyViewSet
 from api.v1.filters import TitlesFilter
-from api.v1.permissions import AdminRules, ReadOnly
+from api.v1.permissions import AccessOrReadOnly, AdminRules, ReadOnly
 from api.v1.serializers import (CategorySerializer, CommentSerializer,
                                 GenreSerializer, ProfileSerializer,
                                 ReviewSerializer, SignUpSerializer,
@@ -19,7 +19,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
-from reviews.models import Category, Comment, Genre, Review, Title, User
+from reviews.models import Category, Genre, Review, Title, User
 
 HTTP_METHOD = ('get', 'post', 'patch', 'delete')
 
@@ -135,22 +135,48 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        AccessOrReadOnly,
+    )
+    pagination_class = PageNumberPagination
+    http_method_names = HTTP_METHOD
+    filter_backends = (filters.OrderingFilter,)
+    ordering = ('id',)
+
+    def get_queryset(self):
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        return title.reviews.all()
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        serializer.save(author=self.request.user, title=title)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    queryset = Comment.objects.all()
-
-    def get_queryset(self):
-        review_id = self.kwargs.get('review_id')
-        review = get_object_or_404(Review, id=review_id)
-        return review.comments.all()
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        AccessOrReadOnly,
+    )
+    pagination_class = PageNumberPagination
+    http_method_names = HTTP_METHOD
+    filter_backends = (filters.OrderingFilter,)
+    ordering = ('id',)
 
     def perform_create(self, serializer):
-        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        review = get_object_or_404(
+            Review,
+            id=self.kwargs.get('review_id'),
+            title__id=self.kwargs.get('title_id'),
+        )
         serializer.save(author=self.request.user, review=review)
+
+    def get_queryset(self):
+        review = get_object_or_404(
+            Review,
+            id=self.kwargs.get('review_id'),
+            title__id=self.kwargs.get('title_id'),
+        )
+        return review.comments.all()

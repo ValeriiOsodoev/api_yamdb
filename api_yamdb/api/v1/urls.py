@@ -1,5 +1,5 @@
-from api.v1.views import (CategoryViewSet, CommentViewSet, GenreViewSet,
-                          ReviewViewSet, SignUPView, TitleViewSet, TokenView,
+from api.v1.views import (CategoriesViewSet, CommentViewSet, GenresViewSet,
+                          ReviewViewSet, SignUPView, TitlesViewSet, TokenView,
                           UserViewSet)
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
@@ -14,9 +14,9 @@ router.register(
     CommentViewSet,
     basename='comments',
 )
-router.register('categories', CategoryViewSet, basename='categories')
-router.register('genres', GenreViewSet, basename='genres')
-router.register('titles', TitleViewSet, basename='titles')
+router.register('categories', CategoriesViewSet, basename='categories')
+router.register('genres', GenresViewSet, basename='genres')
+router.register('titles', TitlesViewSet, basename='titles')
 router.register('users', UserViewSet, basename='users')
 
 urlpatterns = [
