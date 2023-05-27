@@ -6,6 +6,11 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
+auth_urls = [
+    path('signup/', SignUPView.as_view()),
+    path('token/', TokenView.as_view()),
+]
+
 router.register(
     r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='reviews'
 )
@@ -20,14 +25,6 @@ router.register('titles', TitlesViewSet, basename='titles')
 router.register('users', UserViewSet, basename='users')
 
 urlpatterns = [
-    path(
-        'auth/',
-        include(
-            [
-                path('signup/', SignUPView.as_view()),
-                path('token/', TokenView.as_view()),
-            ]
-        ),
-    ),
+    path('auth/', include(auth_urls)),
     path('', include(router.urls)),
 ]

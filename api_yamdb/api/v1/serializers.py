@@ -1,23 +1,14 @@
+import datetime as dt
+
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import RegexValidator
-from rest_framework.serializers import (
-    CharField,
-    EmailField,
-    IntegerField,
-    ModelSerializer,
-    SlugRelatedField,
-    ValidationError,
-)
-
-from reviews.models import (
-    Category,
-    Comment,
-    Genre,
-    GenreTitle,
-    Review,
-    Title,
-    User,
-)
+from rest_framework import serializers
+from rest_framework.serializers import (CharField, EmailField, IntegerField,
+                                        ModelSerializer, SlugRelatedField,
+                                        ValidationError)
+from reviews.models import (Category, Comment, Genre, GenreTitle, Review,
+                            Title)
+from users.models import User
 
 
 class CategorySerializer(ModelSerializer):
@@ -40,6 +31,12 @@ class TitleSerializer(ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
+    def validate_year(self, value):
+        current_year = dt.date.today().year
+        if value > current_year:
+            raise serializers.ValidationError('Проверьте год')
+        return value
 
 
 class TitleCreateUpdateSerializer(ModelSerializer):
